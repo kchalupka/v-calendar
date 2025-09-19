@@ -42,12 +42,21 @@ import {
   defaultsDeep,
 } from './helpers';
 
+export interface Translations {
+  dayNames?: string[];
+  dayNamesShort?: string[];
+  dayNamesNarrow?: string[];
+  monthNames?: string[];
+  monthNamesShort?: string[];
+}
+
 export interface LocaleConfig {
   id: string;
   firstDayOfWeek: number;
   masks: any;
   monthCacheSize: number;
   pageCacheSize: number;
+  translations?: Translations;
 }
 
 const DEFAULT_MONTH_CACHE_SIZE = 12;
@@ -94,7 +103,7 @@ export default class Locale {
   timezone: string | undefined;
   hourLabels: string[];
   dayNames: string[];
-  dayNamesShort: string[];
+  dayNamesShort: string[]; 
   dayNamesShorter: string[];
   dayNamesNarrow: string[];
   monthNames: string[];
@@ -108,7 +117,7 @@ export default class Locale {
     config: Partial<LocaleConfig> | string | undefined = undefined,
     timezone?: string,
   ) {
-    const { id, firstDayOfWeek, masks, monthCacheSize, pageCacheSize } =
+    const { id, firstDayOfWeek, masks, monthCacheSize, pageCacheSize, translations } =
       resolveConfig(config, defaultLocales.value);
     this.monthCache = new Cache(
       monthCacheSize,
@@ -122,12 +131,12 @@ export default class Locale {
     this.masks = masks;
     this.timezone = timezone || undefined;
     this.hourLabels = this.getHourLabels();
-    this.dayNames = getDayNames('long', this.id);
-    this.dayNamesShort = getDayNames('short', this.id);
+    this.dayNames = translations?.dayNames || getDayNames('long', this.id);
+    this.dayNamesShort = translations?.dayNamesShort || getDayNames('short', this.id);
     this.dayNamesShorter = this.dayNamesShort.map(s => s.substring(0, 2));
-    this.dayNamesNarrow = getDayNames('narrow', this.id);
-    this.monthNames = getMonthNames('long', this.id);
-    this.monthNamesShort = getMonthNames('short', this.id);
+    this.dayNamesNarrow = translations?.dayNamesNarrow || getDayNames('narrow', this.id);
+    this.monthNames = translations?.monthNames || getMonthNames('long', this.id);
+    this.monthNamesShort = translations?.monthNamesShort || getMonthNames('short', this.id);
     this.relativeTimeNames = getRelativeTimeNames(this.id);
   }
 
