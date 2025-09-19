@@ -44,6 +44,7 @@
     "build": "tsx build/build.ts",
     "build:docs": "cd docs && yarn build",
     "build:all": "yarn build && yarn build:docs",
+    "prepare": "npm run build",
     "test": "vitest",
     "lint": "eslint . --ext .js,.vue",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,vue}\""
